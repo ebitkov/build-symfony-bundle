@@ -1,0 +1,86 @@
+name: Build Symfony bundle
+description: 'Builds a Symfony bundle and tests it'
+
+inputs:
+  run-tests:
+    description: 'Whether to run tests with PHPUnit or not'
+    required: false
+    default: 'true'
+
+  php-version:
+    description: 'PHP version to use'
+    required: false
+    default: '8.2'
+  php-extensions:
+    description: 'PHP extensions to install'
+    required: false
+    default: 'mbstring, xml, ctype, iconv, intl, pdo, pdo_mysql, dom, filter, gd, json'
+
+  composer-options:
+    description: 'Additional Composer options'
+    required: false
+    default: '--prefer-dist'
+  composer-additional-dependencies:
+    description: 'Additional Composer dependencies to install on build.'
+    required: false
+    default: ''
+
+  symfony-version:
+    description: 'Symfony version to use'
+    required: false
+    default: '6.3.*'
+
+runs:
+  using: 'composite'
+  steps:
+    # Setup PHP
+    - uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ inputs.php-version }}
+        extensions: ${{ inputs.php-extensions }}
+        tools: composer, symfony
+
+    # Create blank Symfony app
+    - run: composer create-project symfony/skeleton:${{ inputs.symfony-version }} ./ --ansi --no-interaction --no-scripts --no-progress --remove-vcs
+      shell: bash
+
+    # Fetch the repo
+    - uses: actions/checkout@v4
+      with:
+        path: bundle
+
+    # Cache Composer
+    - id: composer-cache
+      run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+      shell: bash
+    - uses: actions/cache@v3
+      with:
+        path: ${{ steps.composer-cache.outputs.dir }}
+        key: ${{ runner.os }}-composer-${{ hashFiles('**composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-composer-
+
+    # Configure bundle
+    - run: |
+        symfony composer config repositories.bundle '{"type":"path","url":"./bundle","symlink":true}';
+        symfony composer require --no-install ${{ github.repository }}:@dev
+      shell: bash
+
+    # Install dependencies with Composer
+    - run: symfony composer install --no-interaction --no-progress --ansi ${{ inputs.composer-options }}
+      shell: bash
+
+    # Install additional dependencies
+    - if: ${{ inputs.composer-additional-dependencies != '' }}
+      run: symfony composer require ${{ inputs.composer-additional-dependencies }}
+      shell: bash
+
+    # Install Test-Pack, if required
+    - if: ${{ inputs.run-tests == 'true' }}
+      run: symfony composer require test
+      shell: bash
+
+    # Run tests with PHPUnit
+    - if: ${{ inputs.run-tests == 'true' }}
+      run: symfony php bin/phpunit ./bundle/tests
+      shell: bash
