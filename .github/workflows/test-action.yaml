@@ -1,0 +1,16 @@
+
+name: Test Action
+
+on:
+  push:
+    paths:
+      - '.github/**'
+      - action.yml
+
+jobs:
+  build-dev:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ebitkov/build-symfony-bundle@main
+        with:
+          repository: ebitkov/symfony-bundle

@@ -2,6 +2,10 @@ name: Build Symfony bundle
 description: 'Builds a Symfony bundle and tests it'
 
 inputs:
+  repository:
+    description: 'Repository to fetch'
+    required: false
+    default: '${{ github.repository }}'
   run-tests:
     description: 'Whether to run tests with PHPUnit or not'
     required: false
@@ -47,6 +51,7 @@ runs:
     # Fetch the repo
     - uses: actions/checkout@v4
       with:
+        repository: ${{ inputs.repository }}
         path: bundle
 
     # Cache Composer
