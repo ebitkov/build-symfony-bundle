@@ -6,6 +6,10 @@ inputs:
     description: 'Repository to fetch'
     required: false
     default: '${{ github.repository }}'
+  bundle-name:
+    description: 'Full bundle name with vendor and name: {vendor}/{name}'
+    required: false
+    default: '${{ github.repository }}'
   run-tests:
     description: 'Whether to run tests with PHPUnit or not'
     required: false
