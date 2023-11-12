@@ -72,7 +72,7 @@ runs:
     # Configure bundle
     - run: |
         symfony composer config repositories.bundle '{"type":"path","url":"./bundle","symlink":true}';
-        symfony composer require --no-install ${{ inputs.repository }}:@dev
+        symfony composer require --no-install ${{ inputs.bundle-name }}:@dev
       shell: bash
 
     # Install dependencies with Composer
