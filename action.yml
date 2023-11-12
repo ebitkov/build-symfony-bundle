@@ -91,5 +91,5 @@ runs:
 
     # Run tests with PHPUnit
     - if: ${{ inputs.run-tests == 'true' }}
-      run: symfony php bin/phpunit ./bundle/tests
+      run: symfony php bin/phpunit bundle/tests/
       shell: bash
