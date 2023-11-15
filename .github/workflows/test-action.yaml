@@ -5,8 +5,8 @@ on:
   push:
     paths:
       - '.github/**'
-      - configure-composer.php
-      - action.yml
+      - ./configure-composer.php
+      - ./action.yml
 
 jobs:
   test:
