@@ -11,6 +11,11 @@ $appComposerData['repositories']['bundle'] = [
     ]
 ];
 
+// remove require-dev, if empty
+if (empty($appComposerData['require-dev'])) {
+    unset($appComposerData['require-dev']);
+}
+
 // copy dev namespaces
 foreach ($bundleComposerData['autoload-dev']['psr-4'] as $namespace => $path) {
     $appComposerData['autoload-dev']['psr-4'][$namespace] = './bundle/' . $path;
