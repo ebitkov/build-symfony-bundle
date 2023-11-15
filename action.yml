@@ -69,10 +69,12 @@ runs:
         restore-keys: |
           ${{ runner.os }}-composer-
 
-    # Configure bundle
+    # Configure Composer
     - run: |
-        symfony composer config repositories.bundle '{"type":"path","url":"./bundle","symlink":true}';
-        symfony composer require --no-install ${{ inputs.bundle-name }}:@dev
+        mv "${{ github.action_path }}/configure-composer.php" "${{ github.workspace }}/configure-composer.php";
+        php configure-composer.php
+      shell: bash
+    - run: symfony composer require --no-install ${{ inputs.bundle-name }}:@dev
       shell: bash
 
     # Install dependencies with Composer
