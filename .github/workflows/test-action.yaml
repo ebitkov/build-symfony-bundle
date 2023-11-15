@@ -1,12 +1,7 @@
 
 name: Test Action
 
-on:
-  push:
-    paths:
-      - '.github/**'
-      - ./configure-composer.php
-      - ./action.yml
+on: [ push ]
 
 jobs:
   test:
