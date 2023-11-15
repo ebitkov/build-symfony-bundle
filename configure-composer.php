@@ -14,4 +14,5 @@ $appComposerData['repositories']['bundle'] = [
 // copy dev namespaces
 foreach ($bundleComposerData['autoload-dev']['psr-4'] as $namespace => $path) {
     $appComposerData['autoload-dev']['psr-4'][$namespace] = './bundle/' . $path;
+    echo sprintf('added %s: %s to autoload-dev', $namespace, './bundle/' . $path);
 }
