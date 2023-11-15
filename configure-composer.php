@@ -16,3 +16,5 @@ foreach ($bundleComposerData['autoload-dev']['psr-4'] as $namespace => $path) {
     $appComposerData['autoload-dev']['psr-4'][$namespace] = './bundle/' . $path;
     echo sprintf('added %s: %s to autoload-dev%s', $namespace, './bundle/' . $path, PHP_EOL);
 }
+
+file_put_contents(__DIR__ . '/composer.json', json_encode($appComposerData, JSON_UNESCAPED_SLASHES));
